@@ -1,0 +1,17 @@
+[
+            {
+                "name" : "Company"
+            },
+            {
+                "name" : "Date of Birth"
+            },
+            {
+                "name" : "Next of Kin"
+            },
+            {
+                "name" : "Salutation"
+            },
+            {
+                "name" : "Designation"
+            }
+        ]

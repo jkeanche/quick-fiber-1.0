@@ -1,0 +1,23 @@
+[
+            {
+                "name" : "Lead",
+                "position" : 1,
+                "is_default" : true
+            },
+            {
+                "name" : "Contact Made",
+                "position" : 2
+            },
+            {
+                "name" : "Proposal Made",
+                "position" : 3
+            },
+            {
+                "name" : "Proposal Rejected",
+                "position" : 4
+            },
+            {
+                "name" : "Customer",
+                "position" : 5
+            }
+        ]
