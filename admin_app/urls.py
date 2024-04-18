@@ -17,7 +17,6 @@ urlpatterns = [
     path('forgot', views.login_forgot, name='forgot'),
     path('logout', views.logout_view, name='alogout'),
     path('dashboard', views.dashboard, name='adashboard'),
-    path('dashboard', views.stations, name='astations'),  # admin stations
     path('sessions', views.sessions, name='asessions'),
     path('stations', views.stations, name='stations'),
     path('payments', views.history, name='apayment'),
@@ -49,6 +48,9 @@ urlpatterns = [
     path('invoices/preview', views.invoices_preview, name='invoices_preview'),
     path('invoices/print', views.invoices_print, name='invoices_print'),
     path('invoices/delete', views.invoices_delete, name='invoices_delete'),
+
+
+    path('profile', views.profile, name='profile'),
 
     # crm
     # path('lead-sources', views.lead_sources, name='lead-sources'),

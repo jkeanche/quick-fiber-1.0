@@ -13,7 +13,8 @@ def redir(request):
 
 
 urlpatterns = [
-    path('', views.publicLogin_view, name='index'),
+    # path('', views.publicLogin_view, name='index'),
+    path('', views.index, name='index'),
     path('register', views.add_user, name='register'),
     path('login', views.publicLogin_view, name='login'),
     path('', redir),

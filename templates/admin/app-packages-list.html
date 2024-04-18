@@ -1,157 +1,163 @@
-
 {% extends 'layouts/layout-dashboard.html' %}
 {% load static %}
 {% load humanize %}
 {% block content %}
 <main id="main" class="main">
-  <!-- Layout wrapper -->
-<div class="layout-wrapper layout-content-navbar  ">
-  <div class="layout-container">
-      
-    <!-- Layout container -->
-    <div class="layout-page">
-        
-      <!-- Content wrapper -->
-      <div class="content-wrapper">
+{#    <div class="card mb-4">#}
+{#  <div class="card-widget-separator-wrapper">#}
+{#    <div class="card-body card-widget-separator">#}
+{#      <div class="row gy-4 gy-sm-1">#}
+{#        <div class="col-sm-6 col-lg-3">#}
+{#          <div class="d-flex justify-content-between align-items-start card-widget-1 border-end pb-3 pb-sm-0">#}
+{#            <div>#}
+{#              <h3 class="mb-1">24</h3>#}
+{#              <p class="mb-0">Clients</p>#}
+{#            </div>#}
+{#            <span class="avatar me-sm-4">#}
+{#              <span class="avatar-initial bg-label-secondary rounded"><i class="ti ti-user ti-md"></i></span>#}
+{#            </span>#}
+{#          </div>#}
+{#          <hr class="d-none d-sm-block d-lg-none me-4">#}
+{#        </div>#}
+{#        <div class="col-sm-6 col-lg-3">#}
+{#          <div class="d-flex justify-content-between align-items-start card-widget-2 border-end pb-3 pb-sm-0">#}
+{#            <div>#}
+{#              <h3 class="mb-1">165</h3>#}
+{#              <p class="mb-0">Packages</p>#}
+{#            </div>#}
+{#            <span class="avatar me-lg-4">#}
+{#              <span class="avatar-initial bg-label-secondary rounded"><i class="ti ti-file-invoice ti-md"></i></span>#}
+{#            </span>#}
+{#          </div>#}
+{#          <hr class="d-none d-sm-block d-lg-none">#}
+{#        </div>#}
+{#        <div class="col-sm-6 col-lg-3">#}
+{#          <div class="d-flex justify-content-between align-items-start border-end pb-3 pb-sm-0 card-widget-3">#}
+{#            <div>#}
+{#              <h3 class="mb-1">$2.46k</h3>#}
+{#              <p class="mb-0">Paid</p>#}
+{#            </div>#}
+{#            <span class="avatar me-sm-4">#}
+{#              <span class="avatar-initial bg-label-secondary rounded"><i class="ti ti-checks ti-md"></i></span>#}
+{#            </span>#}
+{#          </div>#}
+{#        </div>#}
+{#        <div class="col-sm-6 col-lg-3">#}
+{#          <div class="d-flex justify-content-between align-items-start">#}
+{#            <div>#}
+{#              <h3 class="mb-1">$876</h3>#}
+{#              <p class="mb-0">Unpaid</p>#}
+{#            </div>#}
+{#            <span class="avatar">#}
+{#              <span class="avatar-initial bg-label-secondary rounded"><i class="ti ti-circle-off ti-md"></i></span>#}
+{#            </span>#}
+{#          </div>#}
+{#        </div>#}
+{#      </div>#}
+{#    </div>#}
+{#  </div>#}
+{#</div>#}
 
-        <!-- Content -->
-        
-          <div class="container-xxl flex-grow-1 container-p-y">
-            
-            
-        <h4 class="py-3 mb-4">
-          <span class="text-muted fw-light">Package /</span> List
-        </h4>
+    <!-- Packages List Table -->
+    <div class="card">
+      <div class="card-header border-bottom">
+          <div class="d-flex align-items-center justify-content-between">
+           <h5 class="card-title mb-3">Search Filter </h5>
+            <a href="javascript:void(0);" id="add-user" class="add-new btn btn-primary waves-effect waves-light"> Add New Package </a>
+        </div>  
+        <div class="d-flex justify-content-between align-items-center row pb-2 gap-3 gap-md-0">
+          <div class="col-md-4 user_role"></div>
+          <div class="col-md-4 user_plan"></div>
+          <div class="col-md-4 user_status"></div>
+        </div>
+      </div>
+      <div class="card-datatable table-responsive">
+        <table class="datatables-users table">
+            <thead class="border-top">
+                  <tr>
 
-<!-- Package List Widget -->
+                      <th scope="col">#</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Speed</th>
+                    <th scope="col">Days</th>
+                    <th scope="col">Max users</th>
+                    <th scope="col">price</th>
+                    <th scope="col">Package Type</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for pkgObject in hotspotObject %}
+                  <tr>
+                    <th scope="row">{{ forloop.counter }}</th>
+                    <td><a href="{% url 'packages' %}?pid={{pkgObject.pno}}" >{{pkgObject.name}}</a></td>
+                    <td>{{pkgObject.speed}}</td>
+                    <td>{{pkgObject.days}}</td>
+                    <td>{{pkgObject.max_users}}</td>
+                    <td>{{pkgObject.price}}</td>
+                    <td>{{pkgObject.pkg_type}}</td>
+                  </tr>
+                  {%endfor%}
 
-<div class="card mb-4">
-  <div class="card-widget-separator-wrapper">
-    <div class="card-body card-widget-separator">
-      <div class="row gy-4 gy-sm-1">
-        <div class="col-sm-6 col-lg-3">
-          <div class="d-flex justify-content-between align-items-start card-widget-1 border-end pb-3 pb-sm-0">
-            <div>
-              <h3 class="mb-1">24</h3>
-              <p class="mb-0">Clients</p>
-            </div>
-            <span class="avatar me-sm-4">
-              <span class="avatar-initial bg-label-secondary rounded"><i class="ti ti-user ti-md"></i></span>
-            </span>
-          </div>
-          <hr class="d-none d-sm-block d-lg-none me-4">
+                </tbody>
+        </table>
+      </div>
+      <!-- Offcanvas to add new Package -->
+      <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasAdd" aria-labelledby="offcanvasAddPackageLabel">
+        <div class="offcanvas-header">
+          <h5 id="offcanvasAddPackageLabel" class="offcanvas-title">Add New Plan</h5>
+          <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
         </div>
-        <div class="col-sm-6 col-lg-3">
-          <div class="d-flex justify-content-between align-items-start card-widget-2 border-end pb-3 pb-sm-0">
-            <div>
-              <h3 class="mb-1">165</h3>
-              <p class="mb-0">Packages</p>
+        <div class="offcanvas-body mx-0 flex-grow-0 pt-0 h-100">
+          <form class="add-new-user pt-0" id="addNewPackageForm"  action="{%url 'stations'%}" method="post">
+           {% csrf_token %}
+            <div class="mb-3">
+              <label class="form-label" for="add-name">Package Name</label>
+              <input type="text" class="form-control" id="add-name" placeholder="Package Name" name="name" />
             </div>
-            <span class="avatar me-lg-4">
-              <span class="avatar-initial bg-label-secondary rounded"><i class="ti ti-file-invoice ti-md"></i></span>
-            </span>
-          </div>
-          <hr class="d-none d-sm-block d-lg-none">
-        </div>
-        <div class="col-sm-6 col-lg-3">
-          <div class="d-flex justify-content-between align-items-start border-end pb-3 pb-sm-0 card-widget-3">
-            <div>
-              <h3 class="mb-1">$2.46k</h3>
-              <p class="mb-0">Paid</p>
+            <div class="mb-3">
+              <label class="form-label" for="add-location">Package Speed (Mbs)</label>
+              <input type="text" id="add-location" class="form-control" placeholder="Enter Speed" name="duration" />
             </div>
-            <span class="avatar me-sm-4">
-              <span class="avatar-initial bg-label-secondary rounded"><i class="ti ti-checks ti-md"></i></span>
-            </span>
-          </div>
-        </div>
-        <div class="col-sm-6 col-lg-3">
-          <div class="d-flex justify-content-between align-items-start">
-            <div>
-              <h3 class="mb-1">$876</h3>
-              <p class="mb-0">Unpaid</p>
+              <div class="mb-3">
+              <label class="form-label" for="add-location">Package duration (Days)</label>
+              <input type="text" id="add-location" class="form-control" placeholder="Enter Duration" name="speed" />
             </div>
-            <span class="avatar">
-              <span class="avatar-initial bg-label-secondary rounded"><i class="ti ti-circle-off ti-md"></i></span>
-            </span>
-          </div>
+               <div class="mb-3">
+              <label class="form-label" for="add-location">Maximum No. of Users</label>
+              <input type="text" id="add-location" class="form-control" placeholder="Enter Max Number of Users" name="maximumUsers" />
+            </div>
+               <div class="mb-3">
+              <label class="form-label" for="add-location">Package Price(KES)</label>
+              <input type="text" id="add-location" class="form-control" placeholder="Enter Location" name="price" />
+            </div>
+
+
+
+            <div class="mb-3">
+              <label class="form-label" for="status">Status</label>
+              <select id="status" name="packageType" class="select2 form-select">
+                <option selected="">Select package type...</option>
+                  <option value="hotspot">Hotspot</option>
+                  <option value="pppoe">PPPoE</option>
+                  <option value="static_ip">Static IP</option>
+                  <option value="dynamic_ip">Dynamic IP</option>
+
+              </select>
+            </div>
+
+            <button type="submit" class="btn btn-primary me-sm-3 me-1 data-submit">Submit</button>
+            <button type="reset" class="btn btn-label-secondary" data-bs-dismiss="offcanvas">Cancel</button>
+          </form>
         </div>
       </div>
     </div>
-  </div>
-</div>
 
-<!-- Package List Table -->
-<div class="card">
-  <div class="card-datatable table-responsive">
-    <table class="invoice-list-table table border-top">
-      <thead>
-        <tr>
-          <th></th>
-          <th>#ID</th>
-          <th><i class='ti ti-trending-up text-secondary'></i></th>
-          <th>Client</th>
-          <th>Total</th>
-          <th class="text-truncate">Issued Date</th>
-          <th>Balance</th>
-          <th>Package Status</th>
-          <th class="cell-fit">Actions</th>
-        </tr>
-      </thead>
-    </table>
-  </div>
-</div>
-
-
-          </div>
-          <!-- / Content -->
-
-          
-          
-
-<!-- Footer -->
-<footer class="content-footer footer bg-footer-theme">
-  <div class="container-xxl">
-    <div class="footer-container d-flex align-items-center justify-content-between py-2 flex-md-row flex-column">
-      <div>
-        © <script>
-        document.write(new Date().getFullYear())
-
-        </script>, made with ❤️ by <a href="https://pixinvent.com/" target="_blank" class="footer-link text-primary fw-medium">Pixinvent</a>
-      </div>
-      <div class="d-none d-lg-inline-block">
-        
-        <a href="https://themeforest.net/licenses/standard" class="footer-link me-4" target="_blank">License</a>
-        <a href="https://1.envato.market/pixinvent_portfolio" target="_blank" class="footer-link me-4">More Themes</a>
-        
-        <a href="https://demos.pixinvent.com/QuickFiber-html-admin-template/documentation/" target="_blank" class="footer-link me-4">Documentation</a>
-        
-        
-        <a href="https://pixinvent.ticksy.com/" target="_blank" class="footer-link d-none d-sm-inline-block">Support</a>
-        
-      </div>
-    </div>
-  </div>
-</footer>
-<!-- / Footer -->
-
-          
-          <div class="content-backdrop fade"></div>
-        </div>
-        <!-- Content wrapper -->
-      </div>
-      <!-- / Layout page -->
-    </div>
-
-    
-    
-    <!-- Overlay -->
-    <div class="layout-overlay layout-menu-toggle"></div>
-    
-    
-    <!-- Drag Target Area To SlideIn Menu On Small Screens -->
-    <div class="drag-target"></div>
-    
-  </div>
-  <!-- / Layout wrapper -->
-  </main><!-- End #main -->
+</main><!-- End #main -->
 {% endblock %}
+
+
+          
+          
+
+
+

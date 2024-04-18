@@ -5,7 +5,39 @@ from django.utils import timezone
 from uuid import uuid4
 from django.contrib.auth.models import User
 
+
 from utils.UserManagerUtil import CustomUserManager
+
+
+class County(models.Model):
+    name = models.CharField(max_length=100, unique=True)
+
+    def __str__(self):
+        return self.name
+
+
+class Constituency(models.Model):
+    name = models.CharField(max_length=100, unique=True)
+    county = models.ForeignKey(County, on_delete=models.CASCADE, related_name='constituencies')
+
+    def __str__(self):
+        return self.name
+
+
+class Location(models.Model):
+    name = models.CharField(max_length=100, unique=True)
+    constituency = models.ForeignKey(Constituency, on_delete=models.CASCADE, related_name='locations')
+
+    def __str__(self):
+        return self.name
+
+
+class Estate(models.Model):
+    name = models.CharField(max_length=100, unique=True)
+    location = models.ForeignKey(Location, on_delete=models.CASCADE, related_name='estates')
+
+    def __str__(self):
+        return self.name
 
 
 class Role(models.Model):
@@ -60,8 +92,8 @@ class Station(models.Model):
     location = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    payment_methods = models.ManyToManyField(PaymentMethod, related_name='stations', blank=True)
-    users = models.ManyToManyField(Users, related_name='stations', blank=True)  # Changed to ManyToManyField
+    payment_methods = models.ManyToManyField(PaymentMethod, related_name='stations', null=True, blank=True)
+    users = models.ManyToManyField(Users, related_name='stations', null=True, blank=True)  # Changed to ManyToManyField
     default_payment_method = models.ForeignKey(PaymentMethod, on_delete=models.SET_NULL, null=True,
                                                related_name='default_stations', blank=True)
     status = models.BooleanField(default=True)  # is_active
@@ -98,6 +130,7 @@ class Router(models.Model):
     def __str__(self):
         return self.host
 
+
 class IPPool(models.Model):
     name = models.CharField(max_length=255, unique=True)
     start_ip = models.GenericIPAddressField(protocol='IPv4')
@@ -106,6 +139,8 @@ class IPPool(models.Model):
 
     def __str__(self):
         return self.name
+
+
 class Payment(models.Model):
     pid = models.AutoField(primary_key=True)
     acc = models.TextField()
@@ -298,3 +333,63 @@ class Invoice(models.Model):
     class Meta:
         db_table = 'auth_user'
        # managed = False     '''
+
+#seeders
+
+def seed_counties_and_locations():
+    kenyan_counties = {
+        "Baringo": ["Kabarnet", "Eldama Ravine"],
+        "Bomet": ["Bomet", "Longisa"],
+        "Bungoma": ["Bungoma", "Webuye"],
+        "Busia": ["Busia", "Malaba"],
+        "Elgeyo Marakwet": ["Iten", "Eldoret"],
+        "Embu": ["Embu", "Runyenjes"],
+        "Garissa": ["Garissa", "Modogashe"],
+        "Homa Bay": ["Homa Bay", "Oyugis"],
+        "Isiolo": ["Isiolo", "Moyale"],
+        "Kajiado": ["Kajiado", "Namanga"],
+        "Kakamega": ["Kakamega", "Lugari"],
+        "Kericho": ["Kericho", "Litein"],
+        "Kiambu": ["Kiambu", "Thika"],
+        "Kilifi": ["Kilifi", "Malindi"],
+        "Kirinyaga": ["Kerugoya", "Sagana"],
+        "Kisii": ["Kisii", "Ogembo"],
+        "Kisumu": ["Kisumu", "Muhoroni"],
+        "Kitui": ["Kitui", "Mwingi"],
+        "Kwale": ["Kwale", "Msambweni"],
+        "Laikipia": ["Nanyuki", "Rumuruti"],
+        "Lamu": ["Lamu", "Mpeketoni"],
+        "Machakos": ["Machakos", "Kangundo"],
+        "Makueni": ["Wote", "Sultan Hamud"],
+        "Mandera": ["Mandera", "Banisa"],
+        "Marsabit": ["Marsabit", "Laisamis"],
+        "Meru": ["Meru", "Chuka"],
+        "Migori": ["Migori", "Kehancha"],
+        "Mombasa": ["Mombasa", "Likoni"],
+        "Murang'a": ["Murang'a", "Maragua"],
+        "Nairobi": ["Nairobi", "Kibera"],
+        "Nakuru": ["Nakuru", "Naivasha"],
+        "Nandi": ["Kapsabet", "Nandi Hills"],
+        "Narok": ["Narok", "Mai Mahiu"],
+        "Nyamira": ["Nyamira", "Nyansiongo"],
+        "Nyandarua": ["Ol Kalou", "Nyahururu"],
+        "Nyeri": ["Nyeri", "Othaya"],
+        "Samburu": ["Maralal", "Wamba"],
+        "Siaya": ["Siaya", "Yala"],
+        "Taita Taveta": ["Voi", "Taveta"],
+        "Tana River": ["Hola", "Garsen"],
+        "Tharaka-Nithi": ["Chuka", "Kathwana"],
+        "Trans Nzoia": ["Kitale", "Kiminini"],
+        "Turkana": ["Lodwar", "Kakuma"],
+        "Uasin Gishu": ["Eldoret", "Soy"],
+        "Vihiga": ["Vihiga", "Hamisi"],
+        "Wajir": ["Wajir", "Buna"],
+        "West Pokot": ["Kapenguria", "Lokichar"]
+    }
+
+    for county_name, locations in kenyan_counties.items():
+        county = County.objects.create(name=county_name)
+        for location_name in locations:
+            Location.objects.create(name=location_name, constituency=None, county=county)
+
+# seed_counties_and_locations()

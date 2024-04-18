@@ -2,6 +2,9 @@ from django_seeding import seeders
 from django_seeding.seeder_registry import SeederRegistry
 
 from crm_app.models import LeadSource, PipeLineStage, CustomField, Tag
+from admin_app.models import County, Location
+
+
 from pathlib import Path
 import os
 
@@ -40,3 +43,11 @@ class TagFieldSeeder(seeders.JSONFileModelSeeder):
     priority = 4
     model = Tag
     json_file_path = [BASE_DIR / 'seeders/tags.json']
+
+
+
+
+
+
+
+

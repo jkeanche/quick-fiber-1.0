@@ -810,7 +810,8 @@ def add_user(request):
                     'pkgtype': pt}
 
         # return render(request, 'user_register.html', dataform)
-        return render(request, 'auth-register-cover.html', dataform)
+        # return render(request, 'auth-register-cover.html', dataform)
+        return render(request, 'auth-register-multisteps.html', dataform)
 
 
 def packages(request):
@@ -859,5 +860,5 @@ def packages(request):
     return render(request, 'page-packages.html', dataform)
 
 
-
-
+def index(request):
+    return render(request, 'index.html')

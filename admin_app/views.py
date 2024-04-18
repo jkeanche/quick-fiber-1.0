@@ -1,8 +1,9 @@
+from django.db.models import Count
 from django.shortcuts import render, redirect
 # from django.http import HttpResponse, HttpRequest, HttpResponseRedirect
 from django.contrib.auth import authenticate, login, logout
 
-from .models import Payment, Pkgs, Logs, pppoe, Contacts, Station
+from .models import Payment, Pkgs, Logs, pppoe, Contacts, Station, Router
 from .models import Users, Sessions, Finances
 from .models import Notifications, Messages
 # from .models import adminAccounts
@@ -323,9 +324,9 @@ def payment_input(request):
 
         dataform = {"account_no": account_data.acc}
 
-        return render(request, 'admin/pages-payments.html', dataform)
+        return render(request, 'pages-payments.html', dataform)
 
-    return render(request, 'admin/pages-payments.html')
+    return render(request, 'pages-payments.html')
 
 
 def payment_submit(request):
@@ -618,7 +619,7 @@ def account(request):
     dataform['pppoe_acc_data'] = pppoe.objects.all()
 
     # return render(request, 'admin/qfh_account.html', dataform)
-    return render(request, 'app-user-list.html', dataform)
+    return render(request, 'admin/app-user-list.html', dataform)
 
 
 def account_edit(request):
@@ -726,7 +727,10 @@ def profile(request):
         return redirect('alogin')
     dataform = {}
     status, dataform['messages'], dataform['notifications'] = MN(request.user.username)
-    return render(request, 'admin/users-profile.html', dataform)
+
+
+    # return render(request, 'admin/users-profile.html', dataform)
+    return render(request, 'admin/pages-profile-user.html', dataform)
 
 
 def pppoe_account(request):
@@ -866,7 +870,6 @@ def stations(request):
     dataform = {}
     status, dataform['messages'], dataform['notifications'] = MN(request.user.username)
     dataform['edit'] = False
-
     spef = request.GET.get('sid', None)
 
     if request.method == 'POST':
@@ -874,28 +877,20 @@ def stations(request):
         criteria = request.POST.get('formType')
         if criteria == 'add':  # Adding a package
             pass
-        #     addStation = Station(name=request.POST.get('Name'),
-        #                       speed=request.POST.get('speed'),
-        #                       days=request.POST.get('duration'),
-        #                       max_users=request.POST.get('maximumUsers'),
-        #                       price=request.POST.get('price'),
-        #                       pkg_type=request.POST.get('packageType'),
-        #                       )
-        #     addPackage.save()
-        #     log('Package,Edit', f'New Package {request.POST.get("Name")} Added By {request.user.username}')
-        # hermes.addPackage()
+            addStation = Station(name=request.POST.get('Name'),
+                                 location=request.POST.get('location'),
+                                 status=request.POST.get('status'),
+                                 )
+            addStation.save()
+            log('Station,Edit', f'New Station {request.POST.get("Name")} Added By {request.user.username}')
 
         elif criteria == 'edit':  # editing a Station
-            pass
-        # editpkg = Pkgs.objects.get(pno=request.POST.get('stationId'))
-        # editpkg.name = request.POST.get('eName')
-        # editpkg.speed = request.POST.get('espeed')
-        # editpkg.days = request.POST.get('eduration')
-        # editpkg.max_users = request.POST.get('emaximumUsers')
-        # editpkg.price = request.POST.get('eprice')
-        # editpkg.save()
-        # log('Station,Edit', f'Package {request.POST.get("Name")} edited By {request.user.username}')
-        # hermes.editPackage()
+            editStation = Pkgs.objects.get(pno=request.POST.get('stationId'))
+            editStation.name = request.POST.get('eName')
+            editStation.location = request.POST.get('eLocation')
+            editStation.status = request.POST.get('eStatus')
+            editStation.save()
+            log('Station,Edit', f'Station {request.POST.get("Name")} edited By {request.user.username}')
 
     elif spef is not None:
         print('lll')
@@ -903,7 +898,26 @@ def stations(request):
         dataform['edit'] = True
         dataform['stationObj'] = pdat
 
-    dataform['station_data'] = Station.objects.all()
+    active_count = Station.objects.filter(status=True).count()
+    inactive_count = Station.objects.filter(status=False).count()
+    idle_count = Station.objects.annotate(num_users=Count('users')).filter(num_users=0).count()
+    total_count = Station.objects.count()
+    # Calculate percentages
+    active_percentage = (active_count / total_count) * 100 if total_count > 0 else 0
+    inactive_percentage = (inactive_count / total_count) * 100 if total_count > 0 else 0
+    idle_percentage = (idle_count / total_count) * 100 if total_count > 0 else 0
+
+    dataform['station_data'] = {
+        'all_stations': Station.objects.all(),
+        'active_count': active_count,
+        'inactive_count': inactive_count,
+        'idle_count': idle_count,
+        'total_count': total_count,
+        'active_percentage': active_percentage,
+        'inactive_percentage': inactive_percentage,
+        'idle_percentage': idle_percentage,
+    }
+
     return render(request, 'admin/app-stations-list.html', dataform)
 
 
@@ -952,6 +966,63 @@ def user_notifications(request):
 
 
 def routers(request):
+    if not request.user.is_authenticated:
+        return redirect('alogin')
+    dataform = {}
+    status, dataform['messages'], dataform['notifications'] = MN(request.user.username)
+    dataform['edit'] = False
+    spef = request.GET.get('rid', None)
+
+    if request.method == 'POST':
+        pass
+        criteria = request.POST.get('formType')
+        if criteria == 'add':  # Adding a package
+            pass
+            addRouter = Router(hostname=request.POST.get('hostname'),
+                               username=request.POST.get('username'),
+                               password=request.POST.get('password'),
+                               port=request.POST.get('port'),
+                               station=request.POST.get('station'),
+                               status=request.POST.get('status'),
+                               )
+            addRouter.save()
+            log('Station,Edit', f'New Station {request.POST.get("Name")} Added By {request.user.username}')
+
+        elif criteria == 'edit':  # editing a Station
+            editRouter = Router.objects.get(pno=request.POST.get('routerId'))
+            editRouter.hostname = request.POST.get('hostname')
+            editRouter.username = request.POST.get('username')
+            editRouter.password = request.POST.get('password')
+            editRouter.port = request.POST.get('port')
+            editRouter.status = request.POST.get('status')
+            editRouter.save()
+            log('Router,Edit', f'Router {request.POST.get("name")} edited By {request.user.username}')
+
+    elif spef is not None:
+        print('lll')
+        pdat = Station.objects.get(pno=spef)
+        dataform['edit'] = True
+        dataform['stationObj'] = pdat
+
+    active_count = Router.objects.filter(status=True).count()
+    inactive_count = Router.objects.filter(status=False).count()
+    # idle_count = Router.objects.annotate(num_users=Count('users')).filter(num_users=0).count()
+    total_count = Router.objects.count()
+    # Calculate percentages
+    active_percentage = (active_count / total_count) * 100 if total_count > 0 else 0
+    inactive_percentage = (inactive_count / total_count) * 100 if total_count > 0 else 0
+    # idle_percentage = (idle_count / total_count) * 100 if total_count > 0 else 0
+
+    dataform['station_data'] = {
+        'all_routers': Router.objects.all(),
+        'active_count': active_count,
+        'inactive_count': inactive_count,
+        # 'idle_count': idle_count,
+        'total_count': total_count,
+        'active_percentage': active_percentage,
+        'inactive_percentage': inactive_percentage,
+        # 'idle_percentage': idle_percentage,
+    }
     return render(request, 'admin/networking/routers-list.html')
 
 
@@ -966,5 +1037,7 @@ def ip_pools(request):
 # Roles and permissions
 def roles(request):
     return render(request, 'admin/app-access-roles.html')
+
+
 def permissions(request):
     return render(request, 'admin/app-access-permission.html')

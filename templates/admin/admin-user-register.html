@@ -48,12 +48,13 @@
                         </div>
                       </div>
                     </div>
-                    <div class="col-md-6">
+                    
+                      <div class="col-md-6">
                       <div class="form-floating mb-3">
-                        <select class="form-select" id="floatingSelect" aria-label="State"name='packageSelected'>
+                        <select class="form-select" id="floatingSelect" aria-label="State" name='packageSelected'>
                           <option selected="">{{package}}</option>
                           {%for popt in pkg_options%}
-                          <option>{{popt.name}}</option>
+                          <option>{{popt.name}}</option> 
                           {%endfor%}
                         </select>
                         <label for="floatingSelect">Package</label>
